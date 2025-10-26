@@ -1,5 +1,7 @@
-const display = document.getElementById('display');
+const expressionDiv = document.getElementById('expression');
+const resultDiv = document.getElementById('result');
 const buttons = document.querySelectorAll('button');
+const delBtn = document.getElementById('del-btn');
 
 let current = '';
 let expression = '';
@@ -17,12 +19,12 @@ buttons.forEach(button => {
       if (justCalculated) {
         current = '';
         expression = '';
+        expressionDiv.textContent = '';
         justCalculated = false;
       }
       current += value;
       expression += value;
-      display.value = expression;
-      adjustFontSize();
+      resultDiv.textContent = expression;
       scrollToEnd();
 
     // Operatoriai
@@ -36,8 +38,7 @@ buttons.forEach(button => {
       operator = value;
       expression += ' ' + value + ' ';
       current = '';
-      display.value = expression;
-      adjustFontSize();
+      resultDiv.textContent = expression;
       scrollToEnd();
 
     // Procentai – skaiciuoja procentine reiksme, bet neliecia rezultato
@@ -48,8 +49,7 @@ buttons.forEach(button => {
         const percentValue = base * (percent / 100);
         current = percentValue.toString();
         expression = base + ' ' + operator + ' ' + percentValue;
-        display.value = expression;
-        adjustFontSize();
+        resultDiv.textContent = expression;
         scrollToEnd();
       }
 
@@ -70,8 +70,8 @@ buttons.forEach(button => {
         case 'root': result = Math.pow(num2, 1 / num1); break;
       }
 
-      display.value = result;
-      adjustFontSize();
+      expressionDiv.textContent = expression;
+      resultDiv.textContent = result;
       lastResult = result;
       expression = result.toString();
       current = '';
@@ -85,23 +85,15 @@ buttons.forEach(button => {
       operator = null;
       firstNumber = null;
       lastResult = null;
-      display.value = '';
+      expressionDiv.textContent = '';
+      resultDiv.textContent = '';
       justCalculated = false;
-
-    // del
-    } else if (value === 'del') {
-      if (justCalculated) return;
-      expression = expression.slice(0, -1);
-      current = current.slice(0, -1);
-      display.value = expression;
-      adjustFontSize();
-      scrollToEnd();
 
     // Kvadratine saknis
     } else if (value === '√') {
-      const result = Math.sqrt(parseFloat(display.value || 0));
-      display.value = result;
-      adjustFontSize();
+      const result = Math.sqrt(parseFloat(resultDiv.textContent || current || 0));
+      expressionDiv.textContent = '';
+      resultDiv.textContent = result;
       lastResult = result;
       justCalculated = true;
 
@@ -110,74 +102,58 @@ buttons.forEach(button => {
       if (justCalculated) {
         expression = '';
         current = '';
+        expressionDiv.textContent = '';
         justCalculated = false;
       }
       current = Math.PI.toString();
       expression += 'π';
-      display.value = expression;
-      adjustFontSize();
+      resultDiv.textContent = expression;
       scrollToEnd();
 
     // x²
     } else if (value === 'x²') {
-      const num = parseFloat(display.value || 0);
+      const num = parseFloat(resultDiv.textContent || current || 0);
       const result = Math.pow(num, 2);
-      display.value = result;
-      adjustFontSize();
+      expressionDiv.textContent = '';
+      resultDiv.textContent = result;
       lastResult = result;
       justCalculated = true;
 
     // xʸ
     } else if (value === 'xʸ') {
-      firstNumber = parseFloat(display.value || 0);
+      firstNumber = parseFloat(resultDiv.textContent || current || 0);
       operator = '^';
       expression = firstNumber + ' ^ ';
       current = '';
-      display.value = expression;
-      adjustFontSize();
+      resultDiv.textContent = expression;
       scrollToEnd();
 
     // ʸ√x
     } else if (value === 'ʸ√x') {
-      firstNumber = parseFloat(display.value || 0);
+      firstNumber = parseFloat(resultDiv.textContent || current || 0);
       operator = 'root';
       expression = firstNumber + ' root ';
       current = '';
-      display.value = expression;
-      adjustFontSize();
+      resultDiv.textContent = expression;
       scrollToEnd();
     }
   });
 });
 
-function scrollToEnd() { // perkelia rodini i desine, kad visada matytusi paskutinis simbolis
-  requestAnimationFrame(() => { // idejau dviguba patikrinima, nes pries tai kas antras skaitmuo nesimatydavo
+// del mygtukas
+delBtn.addEventListener('click', () => {
+  if (justCalculated) return;
+  expression = expression.slice(0, -1);
+  current = current.slice(0, -1);
+  resultDiv.textContent = expression;
+  scrollToEnd();
+});
+
+function scrollToEnd() {
+  requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      display.scrollLeft = display.scrollWidth;
+      expressionDiv.scrollLeft = expressionDiv.scrollWidth;
+      resultDiv.scrollLeft = resultDiv.scrollWidth;
     });
   });
 }
-
-function adjustFontSize() {
-  const maxFont = 34;
-  const minFont = 16;
-  const displayWidth = display.clientWidth - 20; // atimta padding
-  const textWidth = getTextWidth(display.value, getComputedStyle(display).font);
-  const scale = displayWidth / textWidth;
-
-  if (scale < 1) {
-    const newSize = Math.max(minFont, maxFont * scale);
-    display.style.fontSize = newSize + 'px';
-  } else {
-    display.style.fontSize = maxFont + 'px';
-  }
-}
-
-// Pagalbinė funkcija apskaičiuoja teksto plotį
-function getTextWidth(text, font) {
-  const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-  const context = canvas.getContext("2d");
-  context.font = font;
-  return context.measureText(text).width;
-}
-

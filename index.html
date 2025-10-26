@@ -8,40 +8,44 @@
 </head>
 <body>
   <div class="calculator">
-    <input type="text" id="display" disabled>
-
-    <div class="buttons">
-      <button class="ac">AC</button>
-      <button class="del">del</button>
-      <button>√</button>
-      <button>%</button>
-
-      <button>x²</button>
-      <button>xʸ</button>
-      <button>ʸ√x</button>
-      <button>/</button>
-
-      <button>7</button>
-      <button>8</button>
-      <button>9</button>
-      <button>*</button>
-
-      <button>4</button>
-      <button>5</button>
-      <button>6</button>
-      <button>-</button>
-
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
-      <button class="plus">+</button>
-
-      <button>0</button>
-      <button>.</button>
-      <button class="pi">π</button>
-      <button class="equal">=</button>
-    </div>
+  <div id="display">
+    <div id="expression"></div>
+    <div id="result"></div>
+    <button id="del-btn">⌫</button>
   </div>
+
+  <div class="buttons">
+    <button class="ac">AC</button>
+    <button class="function">( )</button>
+    <button class="function">√</button>
+    <button class="function">%</button>
+
+    <button class="function">x²</button>
+    <button class="function">xʸ</button>
+    <button class="function">ʸ√x</button>
+    <button class="operation">/</button>
+
+    <button>7</button>
+    <button>8</button>
+    <button>9</button>
+    <button class="operation">*</button>
+
+    <button>4</button>
+    <button>5</button>
+    <button>6</button>
+    <button class="operation">-</button>
+
+    <button>1</button>
+    <button>2</button>
+    <button>3</button>
+    <button class="operation">+</button>
+
+    <button>0</button>
+    <button>.</button>
+    <button>π</button>
+    <button class="equal">=</button>
+  </div>
+</div>
 
   <script src="script.js"></script>
 </body>
