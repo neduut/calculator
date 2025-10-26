@@ -22,6 +22,8 @@ buttons.forEach(button => {
       current += value;
       expression += value;
       display.value = expression;
+      adjustFontSize();
+      scrollToEnd();
 
     // Operatoriai
     } else if (['+', '-', '*', '/'].includes(value)) {
@@ -35,6 +37,8 @@ buttons.forEach(button => {
       expression += ' ' + value + ' ';
       current = '';
       display.value = expression;
+      adjustFontSize();
+      scrollToEnd();
 
     // Procentai – skaiciuoja procentine reiksme, bet neliecia rezultato
     } else if (value === '%') {
@@ -45,6 +49,8 @@ buttons.forEach(button => {
         current = percentValue.toString();
         expression = base + ' ' + operator + ' ' + percentValue;
         display.value = expression;
+        adjustFontSize();
+        scrollToEnd();
       }
 
     // Lygybes mygtukas
@@ -65,6 +71,7 @@ buttons.forEach(button => {
       }
 
       display.value = result;
+      adjustFontSize();
       lastResult = result;
       expression = result.toString();
       current = '';
@@ -87,11 +94,14 @@ buttons.forEach(button => {
       expression = expression.slice(0, -1);
       current = current.slice(0, -1);
       display.value = expression;
+      adjustFontSize();
+      scrollToEnd();
 
     // Kvadratine saknis
     } else if (value === '√') {
       const result = Math.sqrt(parseFloat(display.value || 0));
       display.value = result;
+      adjustFontSize();
       lastResult = result;
       justCalculated = true;
 
@@ -105,12 +115,15 @@ buttons.forEach(button => {
       current = Math.PI.toString();
       expression += 'π';
       display.value = expression;
+      adjustFontSize();
+      scrollToEnd();
 
     // x²
     } else if (value === 'x²') {
       const num = parseFloat(display.value || 0);
       const result = Math.pow(num, 2);
       display.value = result;
+      adjustFontSize();
       lastResult = result;
       justCalculated = true;
 
@@ -121,6 +134,8 @@ buttons.forEach(button => {
       expression = firstNumber + ' ^ ';
       current = '';
       display.value = expression;
+      adjustFontSize();
+      scrollToEnd();
 
     // ʸ√x
     } else if (value === 'ʸ√x') {
@@ -129,6 +144,40 @@ buttons.forEach(button => {
       expression = firstNumber + ' root ';
       current = '';
       display.value = expression;
+      adjustFontSize();
+      scrollToEnd();
     }
   });
 });
+
+function scrollToEnd() { // perkelia rodini i desine, kad visada matytusi paskutinis simbolis
+  requestAnimationFrame(() => { // idejau dviguba patikrinima, nes pries tai kas antras skaitmuo nesimatydavo
+    requestAnimationFrame(() => {
+      display.scrollLeft = display.scrollWidth;
+    });
+  });
+}
+
+function adjustFontSize() {
+  const maxFont = 34;
+  const minFont = 16;
+  const displayWidth = display.clientWidth - 20; // atimta padding
+  const textWidth = getTextWidth(display.value, getComputedStyle(display).font);
+  const scale = displayWidth / textWidth;
+
+  if (scale < 1) {
+    const newSize = Math.max(minFont, maxFont * scale);
+    display.style.fontSize = newSize + 'px';
+  } else {
+    display.style.fontSize = maxFont + 'px';
+  }
+}
+
+// Pagalbinė funkcija apskaičiuoja teksto plotį
+function getTextWidth(text, font) {
+  const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+  const context = canvas.getContext("2d");
+  context.font = font;
+  return context.measureText(text).width;
+}
+
