@@ -168,14 +168,52 @@ buttons.forEach(button => {
   });
 });
 
-// del mygtukas
+// del mygtukas (trinama protingai pagal tokenus)
 delBtn.addEventListener('click', () => {
-  if (justCalculated) return;
-  expression = expression.slice(0, -1);
-  current = current.slice(0, -1);
+  // jei ka tik skaiciuota, leisk trinti rezultata is karto
+  if (justCalculated) {
+    justCalculated = false;
+  }
+  deleteLastToken();
+});
+
+function deleteLastToken() {
+  if (!expression || expression.length === 0) return;
+
+  // pasalink galinius tarpus
+  let s = expression.replace(/\s+$/g, '');
+
+  // specialios sekos pagal prioritetus
+  if (s.endsWith(' root ')) {
+    s = s.slice(0, -6); // ' root ' = 6 simboliu
+  } else if (s.endsWith(' ^ ')) {
+    s = s.slice(0, -3); // ' ^ '
+  } else if (s.endsWith('√(')) {
+    s = s.slice(0, -2);
+    openParenthesis = Math.max(0, openParenthesis - 1);
+  } else if (s.endsWith('%') || s.endsWith('π')) {
+    s = s.slice(0, -1);
+  } else {
+    // skliaustai ar skaitmenys/operatoriai po viena simboli
+    const lastChar = s.slice(-1);
+    if (lastChar === ')') {
+      // panaikinus ')', atlaisvinam viena atidaryma
+      openParenthesis++;
+    } else if (lastChar === '(') {
+      openParenthesis = Math.max(0, openParenthesis - 1);
+    }
+    s = s.slice(0, -1);
+  }
+
+  expression = s;
+
+  // atnaujinti current i paskutini skaiciu (jei yra)
+  const m = expression.match(/([0-9]+(?:\.[0-9]+)?)$/);
+  current = m ? m[1] : '';
+
   resultDiv.textContent = expression;
   scrollToEnd();
-});
+}
 
 function scrollToEnd() {
   requestAnimationFrame(() => {
