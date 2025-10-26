@@ -86,7 +86,7 @@ body {
   transition: 0.2s;
 }
 #del-btn:hover {
-  background: rgba(255,255,255,0.2);
+  background: transparent;
   color: #fff;
   text-shadow: 0 0 6px #fff;
 }
@@ -164,6 +164,6 @@ button.function {
 
   button {
     height: clamp(44px, 9vh, 72px);
-    font-size: clamp(16px, 2.3vh, 22px);
+    font-size: 25px;
   }
 }
