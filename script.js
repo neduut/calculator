@@ -9,6 +9,7 @@ let operator = null;
 let firstNumber = null;
 let lastResult = null;
 let justCalculated = false;
+let openParenthesis = 0; // skaiciuoja atidarytus skliaustu kiekį
 
 buttons.forEach(button => {
   button.addEventListener('click', () => {
@@ -41,6 +42,26 @@ buttons.forEach(button => {
       resultDiv.textContent = expression;
       scrollToEnd();
 
+    // Skliaustai ( )
+    } else if (value === '( )') {
+      if (justCalculated) {
+        current = '';
+        expression = '';
+        expressionDiv.textContent = '';
+        justCalculated = false;
+      }
+      // Jei yra neuzdarytų skliaustų, uždaryti
+      if (openParenthesis > 0 && current !== '') {
+        expression += ')';
+        openParenthesis--;
+      } else {
+        // Atidaryti naują skliaustą
+        expression += '(';
+        openParenthesis++;
+      }
+      resultDiv.textContent = expression;
+      scrollToEnd();
+
     // Procentai – skaiciuoja procentine reiksme, bet neliecia rezultato
     } else if (value === '%') {
       if (firstNumber !== null && operator !== null) {
@@ -55,29 +76,32 @@ buttons.forEach(button => {
 
     // Lygybes mygtukas
     } else if (value === '=') {
-      const parts = expression.split(' ');
-      let num1 = parseFloat(parts[0]);
-      let op = parts[1];
-      let num2 = parseFloat(current || parts[2]);
-      let result = 0;
-
-      switch (op) {
-        case '+': result = num1 + num2; break;
-        case '-': result = num1 - num2; break;
-        case '*': result = num1 * num2; break;
-        case '/': result = num2 === 0 ? '∞' : num1 / num2; break;
-        case '^': result = Math.pow(num1, num2); break;
-        case 'root': result = Math.pow(num2, 1 / num1); break;
+      // Uždaryti visus neuždarytus skliaustu
+      while (openParenthesis > 0) {
+        expression += ')';
+        openParenthesis--;
       }
-
-      expressionDiv.textContent = expression;
-      resultDiv.textContent = result;
-      lastResult = result;
-      expression = result.toString();
-      current = '';
-      operator = null;
-      justCalculated = true;
-
+      
+      try {
+        // Naudojam eval, bet pakeičiam operatorius į JavaScript formatą
+        let evalExpression = expression
+          .replace(/×/g, '*')
+          .replace(/÷/g, '/')
+          .replace(/π/g, Math.PI);
+        
+        const result = eval(evalExpression);
+        
+        expressionDiv.textContent = expression;
+        resultDiv.textContent = result;
+        lastResult = result;
+        expression = result.toString();
+        current = '';
+        operator = null;
+        openParenthesis = 0;
+        justCalculated = true;
+      } catch (error) {
+        resultDiv.textContent = 'Error';
+      }
     // AC
     } else if (value === 'AC') {
       current = '';
@@ -85,6 +109,7 @@ buttons.forEach(button => {
       operator = null;
       firstNumber = null;
       lastResult = null;
+      openParenthesis = 0;
       expressionDiv.textContent = '';
       resultDiv.textContent = '';
       justCalculated = false;
