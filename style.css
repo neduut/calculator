@@ -40,7 +40,7 @@ body {
   padding: 10px 20px 10px 10px;
 }
 
-/* viršutinė eilutė su formule */
+/* virsutine eilute su formule */
 #expression {
   font-size: 20px;
   text-align: right;
@@ -55,10 +55,10 @@ body {
   display: none;
 }
 
-/* apatinė eilutė su rezultatu */
+/* apatine eilute su rezultatu */
 #result {
   font-size: 42px;
-  margin-top: -10px;
+  margin-top: -2px;
   text-align: right;
   white-space: nowrap;
   overflow-x: auto;
@@ -69,7 +69,7 @@ body {
   display: none;
 }
 
-/* del mygtukas dešinėje ekrano pusėje */
+/* del mygtukas desineje ekrano puseje */
 #del-btn {
   position: absolute;
   right: 10px;
@@ -91,7 +91,7 @@ body {
   text-shadow: 0 0 6px #fff;
 }
 
-/* --- Mygtukų tinklelis --- */
+/* --- Mygtuku tinklelis --- */
 .buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -114,7 +114,7 @@ button:hover {
   background: #555;
 }
 
-/* specialių mygtukų spalvos */
+/* specialiu mygtuku spalvos */
 button.ac {
   background: #976ff6;
   font-weight: 700;
@@ -131,7 +131,7 @@ button.operation {
   color: #2f1e56;
 }
 
-/* viršutinės eilės mygtukai – šviesesni */
+/* virsutines eiles mygtukai - sviesesni */
 button.function {
   background: #d5c6f8;
   color: #2f1e56;

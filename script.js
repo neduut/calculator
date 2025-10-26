@@ -9,7 +9,7 @@ let operator = null;
 let firstNumber = null;
 let lastResult = null;
 let justCalculated = false;
-let openParenthesis = 0; // skaiciuoja atidarytus skliaustu kiekį
+let openParenthesis = 0; // skaiciuoja atidarytus skliaustu kieki
 
 buttons.forEach(button => {
   button.addEventListener('click', () => {
@@ -50,47 +50,41 @@ buttons.forEach(button => {
         expressionDiv.textContent = '';
         justCalculated = false;
       }
-      // Jei yra neuzdarytų skliaustų, uždaryti
+  // Jei yra neuzdarytu skliaustu, uzdaryti
       if (openParenthesis > 0 && current !== '') {
         expression += ')';
         openParenthesis--;
       } else {
-        // Atidaryti naują skliaustą
+  // Atidaryti nauja skliausta
         expression += '(';
         openParenthesis++;
       }
       resultDiv.textContent = expression;
       scrollToEnd();
 
-    // Procentai – skaiciuoja procentine reiksme, bet neliecia rezultato
+  // Procentai - veikia kaip postfiksinis operatorius: a% -> (a/100)
     } else if (value === '%') {
-      if (firstNumber !== null && operator !== null) {
-        const base = firstNumber;
-        const percent = parseFloat(current || '0');
-        const percentValue = base * (percent / 100);
-        current = percentValue.toString();
-        expression = base + ' ' + operator + ' ' + percentValue;
+  // Irasome tik jei turime kairi operanda (skaiciu, pi arba uzdara skliausta)
+      const lastChar = expression.trim().slice(-1);
+      if (/[0-9)π]/.test(lastChar)) {
+        expression += '%';
+        current = '';
         resultDiv.textContent = expression;
         scrollToEnd();
       }
 
     // Lygybes mygtukas
     } else if (value === '=') {
-      // Uždaryti visus neuždarytus skliaustu
+  // Uzdaryti visus neuzdarytus skliaustus
       while (openParenthesis > 0) {
         expression += ')';
         openParenthesis--;
       }
-      
+
       try {
-        // Naudojam eval, bet pakeičiam operatorius į JavaScript formatą
-        let evalExpression = expression
-          .replace(/×/g, '*')
-          .replace(/÷/g, '/')
-          .replace(/π/g, Math.PI);
-        
+        const evalExpression = normalizeForEval(expression);
         const result = eval(evalExpression);
-        
+
         expressionDiv.textContent = expression;
         resultDiv.textContent = result;
         lastResult = result;
@@ -114,13 +108,19 @@ buttons.forEach(button => {
       resultDiv.textContent = '';
       justCalculated = false;
 
-    // Kvadratine saknis
+  // Kvadratine saknis (iraso operatoriu, neskaiciuoja iskart)
     } else if (value === '√') {
-      const result = Math.sqrt(parseFloat(resultDiv.textContent || current || 0));
-      expressionDiv.textContent = '';
-      resultDiv.textContent = result;
-      lastResult = result;
-      justCalculated = true;
+      if (justCalculated) {
+  // pradedam nauja israiska nuo sqrt(
+        expression = '';
+        expressionDiv.textContent = '';
+        justCalculated = false;
+      }
+      expression += '√(';
+      openParenthesis++;
+      current = '';
+      resultDiv.textContent = expression;
+      scrollToEnd();
 
     // Pi
     } else if (value === 'π') {
@@ -135,32 +135,35 @@ buttons.forEach(button => {
       resultDiv.textContent = expression;
       scrollToEnd();
 
-    // x²
+  // x^2 (postfiksinis kvadrato operatorius)
     } else if (value === 'x²') {
-      const num = parseFloat(resultDiv.textContent || current || 0);
-      const result = Math.pow(num, 2);
-      expressionDiv.textContent = '';
-      resultDiv.textContent = result;
-      lastResult = result;
-      justCalculated = true;
+      const lastChar = expression.trim().slice(-1);
+      if (/[0-9)π]/.test(lastChar)) {
+        expression += ' ^ 2';
+        current = '';
+        resultDiv.textContent = expression;
+        scrollToEnd();
+      }
 
-    // xʸ
+  // x^y (iterpia dvejetaini laipsnio operatoriu)
     } else if (value === 'xʸ') {
-      firstNumber = parseFloat(resultDiv.textContent || current || 0);
-      operator = '^';
-      expression = firstNumber + ' ^ ';
-      current = '';
-      resultDiv.textContent = expression;
-      scrollToEnd();
+      const lastChar = expression.trim().slice(-1);
+      if (/[0-9)π]/.test(lastChar)) {
+        expression += ' ^ ';
+        current = '';
+        resultDiv.textContent = expression;
+        scrollToEnd();
+      }
 
-    // ʸ√x
+  // y sqrt x (iterpia dvejetaini 'root' operatoriu: a root b => b ** (1/a))
     } else if (value === 'ʸ√x') {
-      firstNumber = parseFloat(resultDiv.textContent || current || 0);
-      operator = 'root';
-      expression = firstNumber + ' root ';
-      current = '';
-      resultDiv.textContent = expression;
-      scrollToEnd();
+      const lastChar = expression.trim().slice(-1);
+      if (/[0-9)π]/.test(lastChar)) {
+        expression += ' root ';
+        current = '';
+        resultDiv.textContent = expression;
+        scrollToEnd();
+      }
     }
   });
 });
@@ -181,4 +184,105 @@ function scrollToEnd() {
       resultDiv.scrollLeft = resultDiv.scrollWidth;
     });
   });
+}
+
+// konvertuoja simboliu i javascript sintakse eval funkcijai
+function normalizeForEval(expr) {
+  if (!expr || typeof expr !== 'string') return '';
+
+  let s = expr;
+
+  // PGR pakeitimai
+  s = s.replace(/×/g, '*')
+       .replace(/÷/g, '/')
+       .replace(/π/g, String(Math.PI))
+       .replace(/√\(/g, 'Math.sqrt(')
+       .replace(/\^/g, '**'); // laipsnis
+
+  // pakeisti 'a root b' -> (b) ** (1/(a))
+  s = replaceBinaryOperator(s, ' root ', (left, right) => `(${right}) ** (1/(${left}))`);
+
+  // pakeisti postfix '%' -> ((operand)/100)
+  s = replacePostfixPercent(s);
+
+  return s;
+}
+
+function replaceBinaryOperator(expr, opToken, builder) {
+  let s = expr;
+  let idx;
+  while ((idx = s.indexOf(opToken)) !== -1) {
+    const left = getLeftOperand(s, idx);
+    const right = getRightOperand(s, idx + opToken.length);
+    if (!left || !right) break; // nesigauna patikimai
+    const before = s.slice(0, left.start);
+    const after = s.slice(right.end);
+    const replacement = builder(left.text, right.text);
+    s = before + replacement + after;
+  }
+  return s;
+}
+
+function replacePostfixPercent(expr) {
+  let s = expr;
+  let idx;
+  while ((idx = s.indexOf('%')) !== -1) {
+    const left = getLeftOperand(s, idx);
+    if (!left) break;
+    const before = s.slice(0, left.start);
+    const after = s.slice(idx + 1);
+    s = `${before}((${left.text})/100)${after}`;
+  }
+  return s;
+}
+
+// randa kairi operanda, atsizvelgiant i skliaustus
+function getLeftOperand(s, endIdx) { // endIdx - operatoriaus pradzia
+  let i = endIdx - 1;
+  // praleidziam tarpus
+  while (i >= 0 && s[i] === ' ') i--;
+  if (i < 0) return null;
+
+  if (s[i] === ')') {
+    // atgal iki porinio '('
+    let depth = 1; i--;
+    while (i >= 0 && depth > 0) {
+      if (s[i] === ')') depth++;
+      else if (s[i] === '(') depth--;
+      i--;
+    }
+    const start = i + 1;
+    return { start, end: endIdx, text: s.slice(start, endIdx).trim() };
+  } else {
+  // skaicius / pi / taskai
+    let start = i;
+    while (start >= 0 && /[0-9\.π]/.test(s[start])) start--;
+    start++;
+    if (start >= endIdx) return null;
+    return { start, end: endIdx, text: s.slice(start, endIdx).trim() };
+  }
+}
+
+// randa desini operanda, atsizvelgiant i skliaustus
+function getRightOperand(s, startIdx) { // startIdx - po operatoriaus pabaigos
+  let i = startIdx;
+  // praleidziam tarpus
+  while (i < s.length && s[i] === ' ') i++;
+  if (i >= s.length) return null;
+
+  if (s[i] === '(') {
+    let depth = 1; i++;
+    while (i < s.length && depth > 0) {
+      if (s[i] === '(') depth++;
+      else if (s[i] === ')') depth--;
+      i++;
+    }
+    const end = i;
+    return { start: startIdx, end, text: s.slice(startIdx, end).trim() };
+  } else {
+    let end = i;
+    while (end < s.length && /[0-9\.π]/.test(s[end])) end++;
+    if (end === i) return null;
+    return { start: i, end, text: s.slice(i, end).trim() };
+  }
 }
