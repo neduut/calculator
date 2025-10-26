@@ -7,7 +7,7 @@ Tai **paprastas, lengvas ir aiškus projektas**, skirtas parodyti pagrindinį HT
 - Kėlimo kvadratu ir laipsniu funkcijos  
 - Kvadratinės šaknies ir pasirinkto laipsnio šaknies veiksmai  
 - Procentų skaičiavimas  
-- Skaitmeninis „Digital-7“ ekranas su automatišku šrifto dydžio pritaikymu
+- Skaičiuotuvo sąsaja pasižymi lanksčiojo dizaino savybėmis (angl. responsive design). Reaguojama į ekrano, lango dydį, orientaciją.
 
 ### ⚙️ Apribojimai
 Šis skaičiuotuvas **nėra mokslinis** – jis neturi:

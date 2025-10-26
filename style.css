@@ -9,14 +9,18 @@ body {
   margin: 0;
 }
 
+/* Korpusas */
 .calculator {
   background: #262626;
-  padding: 20px;
+  padding: clamp(14px, 3vw, 24px);
   border-radius: 20px;
   box-shadow: 0 0 15px rgba(0,0,0,0.6);
-  width: 320px;
+  width: clamp(280px, 45vw, 460px);
+  max-width: 95vw;
+  transition: all 0.3s ease;
 }
 
+/* Skaitmeninis sriftas */
 @font-face {
   font-family: 'Digital-7 Mono';
   src: url('fonts/digital-7 (mono).ttf') format('truetype');
@@ -24,7 +28,7 @@ body {
   font-style: normal;
 }
 
-/* --- Ekranas su formule ir rezultatu --- */
+/* --- Ekranas --- */
 #display {
   position: relative;
   width: 100%;
@@ -40,7 +44,7 @@ body {
   padding: 10px 20px 10px 10px;
 }
 
-/* virsutine eilute su formule */
+/* Viršutinė eilutė (formulė) */
 #expression {
   font-size: 20px;
   text-align: right;
@@ -50,12 +54,11 @@ body {
   overflow-x: auto;
   scrollbar-width: none;
 }
-
 #expression::-webkit-scrollbar {
   display: none;
 }
 
-/* apatine eilute su rezultatu */
+/* Apatinė eilutė (rezultatas) */
 #result {
   font-size: 42px;
   margin-top: -2px;
@@ -64,19 +67,18 @@ body {
   overflow-x: auto;
   scrollbar-width: none;
 }
-
 #result::-webkit-scrollbar {
   display: none;
 }
 
-/* del mygtukas desineje ekrano puseje */
+/* Del mygtukas ekrano viduje */
 #del-btn {
   position: absolute;
   right: 10px;
-  top: 90px;
+  bottom: 10px;
   background: transparent;
   border: none;
-  color:  #bda3fa;
+  color: #bda3fa;
   font-size: 22px;
   border-radius: 5px;
   padding: 2px 6px;
@@ -84,56 +86,85 @@ body {
   text-shadow: 0 0 3px #bda3fa;
   transition: 0.2s;
 }
-
 #del-btn:hover {
   background: rgba(255,255,255,0.2);
   color: #fff;
   text-shadow: 0 0 6px #fff;
 }
 
-/* --- Mygtuku tinklelis --- */
+/* --- Mygtukų tinklelis --- */
 .buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: clamp(6px, 1.8vh, 14px);
 }
 
-/* bendri mygtukai */
+/* Bendri mygtukai */
 button {
-  height: 60px;
+  height: clamp(44px, 8vh, 68px);
   border: none;
   border-radius: 10px;
-  font-size: 20px;
+  font-size: clamp(16px, 2.5vh, 22px);
   color: #fff;
   background: #444;
   cursor: pointer;
   transition: 0.2s;
 }
-
 button:hover {
   background: #555;
 }
 
-/* specialiu mygtuku spalvos */
+/* Specialūs mygtukai */
 button.ac {
   background: #976ff6;
   font-weight: 700;
 }
-
 button.equal {
   background: #976ff6;
   font-weight: 700;
-  font-size: 25px;
+  font-size: clamp(18px, 2.8vh, 25px);
 }
-
 button.operation {
   background: #bda3fa;
   color: #2f1e56;
 }
-
-/* virsutines eiles mygtukai - sviesesni */
 button.function {
   background: #d5c6f8;
   color: #2f1e56;
   font-weight: 600;
+}
+
+/* Vizualinis atskyrimas tarp stulpelių */
+.buttons > button:nth-child(4n) {
+  border-left: 2px solid rgba(255,255,255,0.12);
+  padding-left: 6px;
+}
+
+/* Maži ekranai*/
+@media (max-width: 360px) {
+  #display { height: clamp(90px, 24vh, 140px); }
+  .calculator { padding: clamp(10px, 2.5vw, 18px); }
+}
+
+/* Peizažo režimas (plačios formos ekranas) */
+@media (orientation: landscape) {
+  body {
+    align-items: center;          
+    justify-content: center;                    /* pašalinam seną padding-top */
+  }
+
+  .calculator {
+    width: clamp(400px, 70vh, 700px);
+    transform: scale(1.0);
+    margin: 8vh 6vw;            
+  }
+
+  #display {
+    height: 140px;
+  }
+
+  button {
+    height: clamp(44px, 9vh, 72px);
+    font-size: clamp(16px, 2.3vh, 22px);
+  }
 }
