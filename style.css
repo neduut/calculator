@@ -32,7 +32,7 @@ body {
 #display {
   position: relative;
   width: 100%;
-  height: 150px;
+  height: 140px;
   margin-bottom: 15px;
   background: #000;
   border-radius: 10px;
@@ -75,13 +75,12 @@ body {
 #del-btn {
   position: absolute;
   right: 10px;
-  bottom: 10px;
+  bottom: 1px;
   background: transparent;
   border: none;
   color: #bda3fa;
   font-size: 22px;
   border-radius: 5px;
-  padding: 2px 6px;
   cursor: pointer;
   text-shadow: 0 0 3px #bda3fa;
   transition: 0.2s;
@@ -142,7 +141,7 @@ button.function {
 
 /* Maži ekranai*/
 @media (max-width: 360px) {
-  #display { height: clamp(90px, 24vh, 140px); }
+  #display { height: 140px }
   .calculator { padding: clamp(10px, 2.5vw, 18px); }
 }
 
