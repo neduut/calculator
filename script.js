@@ -1,7 +1,7 @@
-const expressionDiv = document.getElementById('expression');
-const resultDiv = document.getElementById('result');
-const buttons = document.querySelectorAll('button');
-const delBtn = document.getElementById('del-btn');
+const expressionDiv = document.getElementById('expression'); // virsutine eilute
+const resultDiv = document.getElementById('result'); // apatine eilute
+const buttons = document.querySelectorAll('button'); // visi mygtukai
+const delBtn = document.getElementById('del-btn'); // del mygtukas
 
 let current = '';
 let expression = '';
@@ -11,6 +11,7 @@ let lastResult = null;
 let justCalculated = false;
 let openParenthesis = 0; // skaiciuoja atidarytu skliaustu kieki
 
+// prideda paspaudimo event listenerius kiekvienam mygtukui
 buttons.forEach(button => {
   button.addEventListener('click', () => {
     const value = button.textContent;
@@ -30,6 +31,14 @@ buttons.forEach(button => {
 
     // operatoriai
     } else if (['+', '-', '*', '/'].includes(value)) {
+      // leidzia minusa priekyje (neigiamas skaicius)
+      if (current === '' && expression === '' && value === '-') {
+        expression = '-';
+        current = '-';
+        resultDiv.textContent = expression;
+        scrollToEnd();
+        return;
+      }
       if (current === '' && expression === '') return;
       if (justCalculated) {
         expression = lastResult.toString();
