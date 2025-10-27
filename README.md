@@ -14,7 +14,7 @@ Tai **paprastas, lengvas ir aiškus projektas**, skirtas parodyti pagrindinį HT
 
 ### Atvejų numatymai
 1. **Pradinis būsenos nustatymas** - gavus rezultatą ir pradėjus rašyt naują skaičių ekranas automatiškai išsivalo
-2. **Operatorių filtravimas** - neleidžia pradėti rašyti nuo operatoriaus (+, -, *, /)
+2. **Operatorių filtravimas** - neleidžia pradėti rašyti nuo operatoriaus, išskyrus minusą, kad gautųsi neigiamas skaičius
 3. **Postfiksinių operatorių saugumas** - %, x², xʸ, ʸ√x veikia tik jei prieš juos yra:
 - Skaitmuo (0-9)
 - Uždarytas skliaustas )
