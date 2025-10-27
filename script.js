@@ -92,28 +92,34 @@ buttons.forEach(button => {
       }
 
       // klaidu gaudymas
-      // eval() paima string ir paleidzia ji kaip js koda
       try {
+        // konvertuoja simbolius i javascript sintakse
         const evalExpression = normalizeForEval(expression);
+        // paleidzia israiska
         const result = eval(evalExpression);
 
-        // tikrina ar ne NaN (bet leidzia Infinity)
+        // tikrina ar ne NaN (neigiamo skaiciaus saknis, 0/0)
         if (isNaN(result)) {
           resultDiv.textContent = 'Error';
           return;
         }
 
+        // rodo pradine israiska virsuje
         expressionDiv.textContent = expression;
-        // jei skaicius labai didelis, rodo eksponentine notacija
+        
+        // formatuoja rezultata priklausomai nuo dydzio
         let resultText;
         if (!isFinite(result)) {
           // jei didesnis nei 1.7976931348623157e+308 rodo infinity
           resultText = result > 0 ? '∞' : '-∞';
         } else if (Math.abs(result) > 1e15 || (Math.abs(result) < 1e-6 && result !== 0)) {
+          // labai dideli (> 1 kvadrilijonas) arba labai maži (< 0.000001)
           resultText = result.toExponential(6);
         } else {
+          // normalus skaicius
           resultText = result.toString();
         }
+        
         resultDiv.textContent = resultText;
         lastResult = result;
         expression = result.toString();
@@ -122,6 +128,7 @@ buttons.forEach(button => {
         openParenthesis = 0;
         justCalculated = true;
       } catch (error) {
+        // sintakses klaida (blogai sudaryta israiska)
         resultDiv.textContent = 'Error';
       }
     // AC
