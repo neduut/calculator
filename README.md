@@ -10,7 +10,7 @@ Tai **paprastas, lengvas ir aiškus projektas**, skirtas parodyti pagrindinį HT
 - Procentų skaičiavimas  
 - Skaičiuotuvo sąsaja pasižymi lanksčiojo dizaino savybėmis (angl. responsive design). Reaguojama į ekrano, lango dydį, orientaciją.
 - Rezultatas rodomas dideliais skaičiais, o operacija mažesniais viršuj.
-- Del mygtukas kuris trina po vieną simbolį
+- Del mygtukas, kuris trina po vieną simbolį
 
 ### Atvejų numatymai
 1. **Pradinis būsenos nustatymas** - gavus rezultatą ir pradėjus rašyt naują skaičių ekranas automatiškai išsivalo
