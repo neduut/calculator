@@ -4,7 +4,8 @@ Tai **paprastas, lengvas ir aiškus projektas**, skirtas parodyti pagrindinį HT
 
 ### Funkcijos
 - Sudėtis, atimtis, daugyba, dalyba  
-- Kėlimo kvadratu ir laipsniu funkcijos  
+- Kėlimo kvadratu ir laipsniu funkcijos
+- Galima atlikti daugiau nei du skaičiavimus
 - Kvadratinės šaknies ir pasirinkto laipsnio šaknies veiksmai  
 - Procentų skaičiavimas  
 - Skaičiuotuvo sąsaja pasižymi lanksčiojo dizaino savybėmis (angl. responsive design). Reaguojama į ekrano, lango dydį, orientaciją.
@@ -12,17 +13,16 @@ Tai **paprastas, lengvas ir aiškus projektas**, skirtas parodyti pagrindinį HT
 - Del mygtukas kuris trina po vieną simbolį
 
 ### Atvejų numatymai
-1. **Galima atlikti daugiau nei du skaičiavimus**
-2. **Pradinis būsenos nustatymas** - gavus rezultatą ir pradėjus rašyt naują skaičių ekranas automatiškai išsivalo
-3. **Operatorių filtravimas** - neleidžia pradėti rašyti nuo operatoriaus (+, -, *, /)
-4. **Postfiksinių operatorių saugumas** - %, x², xʸ, ʸ√x veikia tik jei prieš juos yra:
+1. **Pradinis būsenos nustatymas** - gavus rezultatą ir pradėjus rašyt naują skaičių ekranas automatiškai išsivalo
+2. **Operatorių filtravimas** - neleidžia pradėti rašyti nuo operatoriaus (+, -, *, /)
+3. **Postfiksinių operatorių saugumas** - %, x², xʸ, ʸ√x veikia tik jei prieš juos yra:
 - Skaitmuo (0-9)
 - Uždarytas skliaustas )
 - Pi π
-5. **Skliaustų balansas** 
+4. **Skliaustų balansas** 
 - Skaičiuoja atidarytus ( ir uždarytus )
 - Paspaudus = → uždaro visus likusius skliaustus
-6. **Klaidų gaudymas (try-catch)**
+5. **Klaidų gaudymas (try-catch)**
 - Sintaksės klaidos: 5 + * 3, ((3+))
 - Infinity: 5 / 0, 10 / 0
 - NaN: √(-4), 0 / 0
