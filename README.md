@@ -1,21 +1,41 @@
-# 🧮 Skaičiuotuvas
+# Skaičiuotuvas
 
 Tai **paprastas, lengvas ir aiškus projektas**, skirtas parodyti pagrindinį HTML, CSS ir JavaScript sąveikavimą.  
 
-### 🔹 Funkcijos
+### Funkcijos
 - Sudėtis, atimtis, daugyba, dalyba  
 - Kėlimo kvadratu ir laipsniu funkcijos  
 - Kvadratinės šaknies ir pasirinkto laipsnio šaknies veiksmai  
 - Procentų skaičiavimas  
 - Skaičiuotuvo sąsaja pasižymi lanksčiojo dizaino savybėmis (angl. responsive design). Reaguojama į ekrano, lango dydį, orientaciją.
+- Rezultatas rodomas dideliais skaičiais, o operacija mažesniais viršuj.
+- Del mygtukas kuris trina po vieną simbolį
 
-### ⚙️ Apribojimai
+### Atvejų numatymai
+1. **Galima atlikti daugiau nei du skaičiavimus**
+2. **Pradinis būsenos nustatymas** - gavus rezultatą ir pradėjus rašyt naują skaičių ekranas automatiškai išsivalo
+3. **Operatorių filtravimas** - neleidžia pradėti rašyti nuo operatoriaus (+, -, *, /)
+4. **Postfiksinių operatorių saugumas** - %, x², xʸ, ʸ√x veikia tik jei prieš juos yra:
+- Skaitmuo (0-9)
+- Uždarytas skliaustas )
+- Pi π
+5. **Skliaustų balansas** 
+- Skaičiuoja atidarytus ( ir uždarytus )
+- Paspaudus = → uždaro visus likusius skliaustus
+6. **Klaidų gaudymas (try-catch)**
+- Sintaksės klaidos: 5 + * 3, ((3+))
+- Infinity: 5 / 0, 10 / 0
+- NaN: √(-4), 0 / 0
+- Nebaigtos išraiškos: 5 +
+
+
+### Apribojimai
 Šis skaičiuotuvas **nėra mokslinis** – jis neturi:
 - trigonometrijos funkcijų (`sin`, `cos`, `tan`),  
 - logaritmų,  
 - trupmenų palaikymo ar sudėtingų matematinių operacijų.  
 
-### 👀 Dėsniai
+### Dėsniai
 - **Artumo dėsnis (Law of Proximity):**  
   Mygtukai ir ekranas išdėstyti grupėmis – skaičiai, veiksmai ir funkcijos atskirti tarpeliais, todėl vartotojas lengvai atpažįsta, kurie elementai priklauso tai pačiai kategorijai.
 - **Panašumo dėsnis (Law of Similarity):**  
