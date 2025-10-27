@@ -1,17 +1,18 @@
+// kintamuju inicijavimas
 const expressionDiv = document.getElementById('expression'); // virsutine eilute
 const resultDiv = document.getElementById('result'); // apatine eilute
 const buttons = document.querySelectorAll('button'); // visi mygtukai
 const delBtn = document.getElementById('del-btn'); // del mygtukas
 
-let current = '';
-let expression = '';
-let operator = null;
-let firstNumber = null;
-let lastResult = null;
-let justCalculated = false;
+let current = ''; // dabartinis ivedamas skaicius
+let expression = ''; // visa skaiciavimo israiska
+let operator = null; // dabartinis ivedamas operatorius
+let firstNumber = null; // pirmas skaicius
+let lastResult = null; // paskutinis rezultatas
+let justCalculated = false; // ar buvo atliktas skaiciavimas
 let openParenthesis = 0; // skaiciuoja atidarytu skliaustu kieki
 
-// prideda paspaudimo event listenerius kiekvienam mygtukui
+// mygtuku paspaudimu valdymas
 buttons.forEach(button => {
   button.addEventListener('click', () => {
     const value = button.textContent;
@@ -59,19 +60,19 @@ buttons.forEach(button => {
         expressionDiv.textContent = '';
         justCalculated = false;
       }
-  // jei yra neuzdarytu skliaustu, uzdaryti
+      // jei yra neuzdarytu skliaustu, uzdaro
       if (openParenthesis > 0 && current !== '') {
         expression += ')';
         openParenthesis--;
       } else {
-  // atidaryti nauja skliausta
+      // atidaryti nauja skliausta
         expression += '(';
         openParenthesis++;
       }
       resultDiv.textContent = expression;
       scrollToEnd();
 
-  // procentai - veikia kaip postfiksinis operatorius: a% -> (a/100)
+  // procentu iraiska a% -> (a/100)
     } else if (value === '%') {
   // irasome tik jei turime kairi operanda (skaiciu, pi arba uzdara skliausta)
       const lastChar = expression.trim().slice(-1);
@@ -96,14 +97,24 @@ buttons.forEach(button => {
         const evalExpression = normalizeForEval(expression);
         const result = eval(evalExpression);
 
-        // dalyba ir 0 rodo kaip error ne kaip infinity
-        if (!isFinite(result)) {
+        // tikrina ar ne NaN (bet leidzia Infinity)
+        if (isNaN(result)) {
           resultDiv.textContent = 'Error';
           return;
         }
 
         expressionDiv.textContent = expression;
-        resultDiv.textContent = result;
+        // jei skaicius labai didelis, rodo eksponentine notacija
+        let resultText;
+        if (!isFinite(result)) {
+          // jei didesnis nei 1.7976931348623157e+308 rodo infinity
+          resultText = result > 0 ? '∞' : '-∞';
+        } else if (Math.abs(result) > 1e15 || (Math.abs(result) < 1e-6 && result !== 0)) {
+          resultText = result.toExponential(6);
+        } else {
+          resultText = result.toString();
+        }
+        resultDiv.textContent = resultText;
         lastResult = result;
         expression = result.toString();
         current = '';
@@ -172,7 +183,7 @@ buttons.forEach(button => {
         scrollToEnd();
       }
 
-  // y sqrt x (a root b => b ** (1/a))
+  // saknies israiska y sqrt x (a root b => b ** (1/a))
     } else if (value === 'ʸ√x') {
       const lastChar = expression.trim().slice(-1);
       if (/[0-9)π]/.test(lastChar)) {
@@ -185,9 +196,9 @@ buttons.forEach(button => {
   });
 });
 
-// del mygtukas (trina po viena tokena)
+// del mygtukas (trina po viena simboli)
 delBtn.addEventListener('click', () => {
-  // rezultata tirgi trina po viena simboli
+  // rezultata irgi trina po viena simboli
   if (justCalculated) {
     justCalculated = false;
   }
@@ -232,6 +243,7 @@ function deleteLastToken() {
   scrollToEnd();
 }
 
+// uztikrina, kad kai israiska ilga, rodymas auto pasislenka i desine, kad matytus nauji simboliai
 function scrollToEnd() {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -254,10 +266,10 @@ function normalizeForEval(expr) {
        .replace(/√\(/g, 'Math.sqrt(')
        .replace(/\^/g, '**'); // laipsnis
 
-  // pakeisti 'a root b' -> (b) ** (1/(a))
+  // pakeicia saknies israiska
   s = replaceBinaryOperator(s, ' root ', (left, right) => `(${right}) ** (1/(${left}))`);
 
-  // pakeisti postfix '%' -> ((operand)/100)
+  // pakeisti procentu israiska
   s = replacePostfixPercent(s);
 
   return s;
